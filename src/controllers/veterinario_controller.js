@@ -51,10 +51,11 @@ const login = async (req, res) => {
     if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos debes llenar todos los campos"})
 
     const veterinarioBDD = await Veterinario.findOne({email})
-    if(veterinarioBDD.confirmEmail===false) return res.status(400).json({msg:"Lo sentimos debes validar tu cuenta"})
+    if(veterinarioBDD?.confirmEmail===false) return res.status(400).json({msg:"Lo sentimos debes validar tu cuenta"})
 
     if(!veterinarioBDD)return res.status(400).json({msg:"Lo sentimos el email no se encuentra registrado"})
-    const verificarPasword= veterinarioBDD.matchPassword(password)
+
+    const verificarPasword= await veterinarioBDD.matchPassword(password)
     if(!verificarPasword) return res.status(400).json({msg:"Lo sentimos el password no es el correcto"})
 
     // Paso 3: Interactuar con BDD
